@@ -11,11 +11,14 @@ class Controller extends BaseController
     public function hello_word(){
         $content = 'hello word';
         return response($content, 200)
-            ->header('Content-Type', 'application/json');
+        ->header('Content-Type', 'application/json');
     }
 
     public function testApi(){
         $url = 'https://www.todoalojamiento.com/resttest/api/configuracion/rooms?idHotel=373';
+
+        $user = env('API_TODOALOJAMIENTO_USER');
+        $pwd = env('API_TODOALOJAMIENTO_PASSWORD');
 
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -26,14 +29,14 @@ class Controller extends BaseController
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array(
             'idHotel: 373',
-            'Authorization: Basic'
+            'Authorization: Basic '.base64_encode("$user:$pwd"),
         ));
         $response = curl_exec($curl);
         $curl_errno = curl_errno($curl);
         curl_close($curl);
 
         return response($response, 200)
-            ->header('Content-Type', 'application/json');
+            ->header('Content-Type', 'application/xml');
     }
 
     public function testxml(){
